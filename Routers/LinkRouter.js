@@ -1,12 +1,12 @@
 import express from "express";
-import LinksController from "../Controllers/LinksController.js";
+import LinkController from "../Controllers/LinkController.js";
 
 const LinkRouter = express.Router();
 
-LinkRouter.get("/", LinksController.getList);
-LinkRouter.get("/:id", LinksController.redirectById);
-LinkRouter.post("/", LinksController.add);
-LinkRouter.put("/:id", LinksController.update);
-LinkRouter.delete("/:id", LinksController.delete);
+LinkRouter.get("/", LinkController.getList);
+LinkRouter.get("/:id", LinkController.redirectById);
+LinkRouter.post("/", LinkController.add);
+LinkRouter.put("/:id", LinkController.update);
+LinkRouter.delete("/:id", LinkController.delete);
 
 export default LinkRouter;

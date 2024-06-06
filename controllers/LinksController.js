@@ -1,6 +1,6 @@
 import LinkModel from "../Models/LinkModel.js";
 
-const LinksController = {
+const LinkController = {
     getList: async (req, res) => {
         try {
             const link = await LinkModel.find();
@@ -64,4 +64,4 @@ const LinksController = {
     },
 };
 
-export default LinksController;
+export default LinkController;

@@ -1,19 +1,44 @@
-const express = require('express');
-const bodyParser = require('body-parser');
-const cors = require('cors');
-const mongoose = require('mongoose'); 
-const linkRoutes = require('./routes/linkRoutes.js');
-const userRoutes = require('./routes/userRoutes.js');
+import cors from "cors"
+import express from 'express'  
+import bodyParser from "body-parser";
+import jwt from "jsonwebtoken";
+import LinkRouter from "./Routers/LinkRouter.js";
+import UserRouter from "./Routers/UserRouter.js";
+import connectDB from "./database.js"
 
-const app = express();
+const secret = "JIs%WCfS#Sl454d5FX";
+const port = 3000;
+connectDB();
+const app = express()
 
-app.use(bodyParser.json());
 app.use(cors());
+app.use(bodyParser.json());
 
-app.use('/api/links', linkRoutes);
-app.use('/api/users', userRoutes);
+app.post("/login", (req, res) => {
+    if (req.body.userName == "user1" && req.body.password == "123456") {
+      const token = jwt.sign(
+        { userId: 1, userName: "user1", roles: ["manager"] }, secret);
+      res.send({ accessToken: token });
+    } else {
+      res.status(401).send({ message: "unauthorized" });
+    }
+  });
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-    console.log(`Application is running on port ${PORT}`);
-});
+app.use("/", (req, res, next) => {
+    const token = req.headers.authorization?.slice(7);
+    console.log("token", token);
+    try {
+      const decoded = jwt.verify(token, secret);
+      req.userId = decoded.userId;
+      next();
+    } catch {
+      res.status(401).send({ message: "unauthorized" });
+    }
+  });
+  
+app.use('/links', LinkRouter);
+app.use('/users', UserRouter);
+
+app.listen(port, () => {
+  console.log(`App listening on http://localhost:${port}`)
+})
